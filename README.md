@@ -14,46 +14,77 @@ Machine Learning Algorithms
 │   ├── MP-IDB: The Malaria Parasite Image Database for Image Processing and Analysis
 │   ├── MultimodelPrep
 │   └── pipeline_design
+│       ├── Dataset
+│       │   ├── test
+│       │   └── train
+│       │       ├── category 1
+│       │       ├── category 2
+│       │       ├── category 3
+│       │       └── category 4
 ├── ArtificialNeuralNetwork
 │   ├── DeepNeuralNetwork
 │   └── SiameseNetwork
-├── CapsuleNetwork
 ├── ConvolutionalNeuralNetwork
-│   ├── AlexNet
-│   ├── DeepLabV3Plus
-│   ├── DenseNet
-│   ├── FasterRCNN
-│   ├── FractalNet
 │   ├── GAN
-│   ├── Gated_SCNN
-│   ├── GeneticCNN
-│   ├── InceptionNet
-│   ├── JointPyramidalUnit
-│   ├── Lenet5
-│   ├── MetaQNN
-│   ├── MobileNet
-│   ├── NetworkInNetwork
-│   ├── PolyNet
-│   ├── PyramidalNet
-│   ├── ResNet
-│   ├── ResNext
-│   ├── ResUNet
-│   ├── SENet
-│   ├── SingleShotDetection
-│   ├── StyleTransfer
-│   ├── UNet
-│   ├── VGGNet
-│   ├── XceptionNet
-│   ├── YOLO
-│   └── ZFNet
-├── GaussianCDF
-├── GradientAccumulation
+│   │   ├── ConditionalGan
+│   │   ├── CycleGAN
+│   │   ├── DeepConvolutionalGAN
+│   │   ├── DeepRegretAnalyticGAN
+│   │   ├── InitialGAN
+│   │   ├── LeastSquareGan
+│   │   ├── WassersteinGAN
+│   │   └── WassersteinImprovedGAN
+│   ├── LargeNetwork
+│   │   ├── AlexNet
+│   │   ├── CapsuleNetwork
+│   │   ├── DenseNet
+│   │   ├── HighwayNet
+│   │   ├── InceptionNet
+│   │   │   ├── InceptionV1
+│   │   │   ├── InceptionV2
+│   │   │   ├── InceptionV3
+│   │   │   └── InceptionV4
+│   │   ├── NetworkInNetwork
+│   │   ├── ResidualAttentionNet
+│   │   ├── ResNet
+│   │   │   ├── BaseResnet
+│   │   │   └── Resnet18_CBAM
+│   │   ├── ResNext
+│   │   ├── SENet
+│   │   ├── VGGNet
+│   │   └── XceptionNet
+│   ├── Misc
+│   │   ├── GeneticCNN
+│   │   ├── MetaQNN
+│   │   └── StyleTransfer
+│   ├── ObjectDetection
+│   │   ├── FasterRCNN
+│   │   ├── SingleShotDetection
+│   │   └── YOLO
+│   │       └── v2
+│   ├── SemanticSegmentation
+│   │   ├── DeepLabV3Plus
+│   │   ├── Gated_SCNN
+│   │   ├── JointPyramidalUnit
+│   │   ├── PyramidalNet
+│   │   ├── ResUNet
+│   │   └── UNet
+│   └── SmallNetwork
+│       ├── FractalNet
+│       ├── Lenet5
+│       ├── MobileNet
+│       ├── PolyNet
+│       └── ZFNet
 ├── GraphNeuralNetwork
 ├── LinearRegression
 ├── LogisticRegression
 ├── markdown_edits
 ├── Miscellaneous
-│   └── EmpiricalRiskMinimization
+│   ├── EmpiricalRiskMinimization
+│   ├── GaussianCDF
+│   ├── GradientAccumulation
+│   ├── Initialization_and_gradient_test
+│   └── Regularization_with_NM_optimization
 ├── NaiveBayesClassifier
 ├── RecurrentNeuralNetwork
 │   ├── Bidirectional_RNN
