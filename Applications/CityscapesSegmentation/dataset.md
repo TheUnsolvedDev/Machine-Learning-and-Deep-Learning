@@ -1,0 +1,2 @@
+gtFine_trainvaltest
+leftImg8bit_trainvaltest
