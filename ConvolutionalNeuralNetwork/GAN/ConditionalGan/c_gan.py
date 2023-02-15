@@ -7,12 +7,6 @@ from silence_tensorflow import silence_tensorflow
 import tensorflow_datasets as tfds
 from params import *
 
-if not os.path.exists('trial_images/'+__file__.split('/')[-1].replace('.py', '')+'/'):
-    os.system("mkdir -p "+'trial_images/' +
-              __file__.split('/')[-1].replace('.py', '')+'/')
-    os.system("mkdir -p "+'trial_weights/' +
-              __file__.split('/')[-1].replace('.py', '')+'/')
-
 silence_tensorflow()
 
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
@@ -108,38 +102,6 @@ def convert_onehot(label, num_classes):
 fig = plt.figure(figsize=(4, 4))
 
 
-def save_imgs(epoch, generator, noise):
-    # You can set it you want.
-    labels = [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 1
-              [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  # 2
-              [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],  # 3
-              [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],  # 4
-              [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],  # 5
-              [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  # 6
-              [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],  # 7
-              [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],  # 8
-              [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],  # 9
-              [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],  # 10
-              [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],  # 11
-              [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],  # 12
-              [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],  # 13
-              [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],  # 14
-              [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],  # 15
-              [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],  # 16
-              ]
-    labels = tf.convert_to_tensor(labels)
-    gen_imgs = generator([noise, labels], training=False)
-
-    fig = plt.figure(figsize=(4, 4))
-
-    for i in range(gen_imgs.shape[0]):
-        plt.subplot(4, 4, i + 1)
-        plt.imshow(gen_imgs[i, :, :, 0] * 127.5 + 127.5, cmap='gray')
-        plt.axis('off')
-
-    fig.savefig("trail_images/c_gan/mnist_%d.png" % epoch)
-
-
 def generate_and_save_images(model, epoch, test_input):
     labels = [[1, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # 1
               [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],  # 2
@@ -169,8 +131,7 @@ def generate_and_save_images(model, epoch, test_input):
         plt.axis('off')
     plt.show(block=False)
     plt.pause(2)
-    plt.savefig('trial_images/'+__file__.split('/')[-1].replace('.py', '')+'/' +
-                'image_at_epoch_{:04d}.png'.format(epoch))
+    plt.savefig('c_gan/image_at_epoch_{:04d}.png'.format(epoch))
     plt.close("all")
 
 
@@ -208,14 +169,8 @@ def train_model(train,  epochs=ITERATION):
     disc.summary()
 
     try:
-        gen.load_weights('trial_weights/'+__file__.split('/')
-                         [-1].replace('.py', '')+'/' +
-                         'generator_'+__file__.split('/')
-                         [-1].replace('.py', '')+'.h5')
-        disc.load_weights('trial_weights/'+__file__.split('/')
-                          [-1].replace('.py', '')+'/' +
-                          'discriminator_'+__file__.split('/')
-                          [-1].replace('.py', '')+'.h5')
+        gen.load_weights('c_gan_weights/generator_c_gan.h5')
+        disc.load_weights('c_gan_weights/discriminator_c_gan.h5')
     except FileNotFoundError:
         pass
 
@@ -243,14 +198,8 @@ def train_model(train,  epochs=ITERATION):
 
             loss = g_loss
             if loss <= min_loss_gen:
-                disc.save_weights('trial_weights/'+__file__.split('/')
-                                  [-1].replace('.py', '')+'/' +
-                                  'discriminator_'+__file__.split('/')
-                                  [-1].replace('.py', '')+'.h5')
-                gen.save_weights('trial_weights/'+__file__.split('/')
-                                 [-1].replace('.py', '')+'/' +
-                                 'generator_'+__file__.split('/')
-                                 [-1].replace('.py', '')+'.h5')
+                disc.save_weights('c_gan_weights/discriminator_c_gan.h5')
+                gen.save_weights('c_gan_weights/generator_c_gan.h5')
                 loss = min_loss_gen
 
 

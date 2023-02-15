@@ -6,11 +6,6 @@ import sys
 from silence_tensorflow import silence_tensorflow
 from params import *
 
-if not os.path.exists('trial_images/'+__file__.split('/')[-1].replace('.py', '')+'/'):
-    os.system("mkdir -p "+'trial_images/' +
-              __file__.split('/')[-1].replace('.py', '')+'/')
-    os.system("mkdir -p "+'trial_weights/' +
-              __file__.split('/')[-1].replace('.py', '')+'/')
 
 silence_tensorflow()
 
@@ -187,8 +182,7 @@ def generate_and_save_images(model, epoch, test_input):
         plt.axis('off')
     plt.show(block=False)
     plt.pause(2)
-    plt.savefig('trial_images/'+__file__.split('/')[-1].replace('.py', '')+'/' +
-                'image_at_epoch_{:04d}.png'.format(epoch))
+    plt.savefig('dc_gan/image_at_epoch_{:04d}.png'.format(epoch))
     plt.close("all")
     # plt.show(block='False')
 
@@ -203,14 +197,8 @@ def train_model(train, val, epochs=ITERATION, batch_size=BATCH_SIZE):
     disc.summary()
 
     try:
-        gen.load_weights('trial_weights/'+__file__.split('/')
-                         [-1].replace('.py', '')+'/' +
-                         'generator_'+__file__.split('/')
-                         [-1].replace('.py', '')+'.h5')
-        disc.load_weights('trial_weights/'+__file__.split('/')
-                          [-1].replace('.py', '')+'/' +
-                          'discriminator_'+__file__.split('/')
-                          [-1].replace('.py', '')+'.h5')
+        gen.load_weights('dc_gan_weights/generator_dc_gan.h5')
+        disc.load_weights('dc_gan_weights/discriminator_dc_gan.h5')
     except FileNotFoundError:
         pass
 
@@ -241,14 +229,8 @@ def train_model(train, val, epochs=ITERATION, batch_size=BATCH_SIZE):
 
             loss = g_loss
             if loss <= min_loss_gen:
-                disc.save_weights('trial_weights/'+__file__.split('/')
-                                  [-1].replace('.py', '')+'/' +
-                                  'discriminator_'+__file__.split('/')
-                                  [-1].replace('.py', '')+'.h5')
-                gen.save_weights('trial_weights/'+__file__.split('/')
-                                 [-1].replace('.py', '')+'/' +
-                                 'generator_'+__file__.split('/')
-                                 [-1].replace('.py', '')+'.h5')
+                disc.save_weights('dc_gan_weights/discriminator_dc_gan.h5')
+                gen.save_weights('dc_gan_weights/generator_dc_gan.h5')
                 loss = min_loss_gen
 
 
