@@ -132,7 +132,7 @@ def train_model(train, epochs=ITERATION, batch_size=BATCH_SIZE):
         pass
 
     print('Training...')
-    for epoch in range(493, epochs+1):
+    for epoch in range(0, epochs+1):
         total_gene_g_loss = 0
         total_gene_f_loss = 0
         total_disc_x_loss = 0
@@ -188,6 +188,14 @@ def test_model(data):
     for i in range(0, len(her_gen_image)):
         image = np.hstack([her_image[i], her_gen_image[i]])
         plt.imshow(image)
+        plt.axis('off')
+        plt.savefig("trial_images/final_result_{}.png".format(str(i).zfill(5)))
+        plt.show()
+
+    for i in range(0, len(real_y)):
+        image = np.hstack([real_y[i], gene_imgs[i]])
+        plt.imshow(image)
+        plt.axis('off')
         plt.savefig("trial_images/final_result_{}.png".format(str(i).zfill(5)))
         plt.show()
 
@@ -202,5 +210,5 @@ if __name__ == '__main__':
     mae = tf.keras.losses.MeanAbsoluteError()
     data, test_data = dataset()
 
-    train_model(data)
-    # test_model(test_data)
+    # train_model(data)
+    test_model(test_data)
