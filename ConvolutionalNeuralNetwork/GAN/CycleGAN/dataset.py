@@ -88,7 +88,8 @@ def dataset():
 
 
 if __name__ == '__main__':
-    data = dataset()
-    for dat in data.take(1):
+    data,dats2 = dataset()
+    for dat in data:
         print(dat[0].numpy().shape)
         print(dat[1].numpy().shape)
+        break
