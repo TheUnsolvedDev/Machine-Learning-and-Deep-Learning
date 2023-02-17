@@ -14,13 +14,13 @@ Machine Learning Algorithms
 │   ├── MP-IDB: The Malaria Parasite Image Database for Image Processing and Analysis
 │   ├── MultimodelPrep
 │   └── pipeline_design
-│       ├── Dataset
-│       │   ├── test
-│       │   └── train
-│       │       ├── category 1
-│       │       ├── category 2
-│       │       ├── category 3
-│       │       └── category 4
+│       └── Dataset
+│           ├── test
+│           └── train
+│               ├── category 1
+│               ├── category 2
+│               ├── category 3
+│               └── category 4
 ├── ArtificialNeuralNetwork
 │   ├── DeepNeuralNetwork
 │   └── SiameseNetwork
@@ -72,8 +72,10 @@ Machine Learning Algorithms
 │   └── SmallNetwork
 │       ├── FractalNet
 │       ├── Lenet5
+│       ├── MLP-Mixer
 │       ├── MobileNet
 │       ├── PolyNet
+│       ├── SqueezeNet
 │       └── ZFNet
 ├── GraphNeuralNetwork
 ├── LinearRegression
