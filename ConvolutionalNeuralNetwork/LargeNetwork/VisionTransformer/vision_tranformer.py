@@ -143,6 +143,10 @@ class ViTModel(tf.keras.Model):
             inputs=[x], outputs=self.call(x, training=False))
         return model.summary()
 
+    def model(self):
+        x = tf.keras.layers.Input(shape=(32, 32, 3))
+        return tf.keras.Model(inputs=[x], outputs=self.call(x))
+
 
 def process_images(image, label):
     image = tf.image.per_image_standardization(image)
@@ -151,11 +155,10 @@ def process_images(image, label):
 
 if __name__ == '__main__':
     model = ViTModel(patch_size=2, num_patches=16*16, num_classes=10,
-                     embed_dim=64, num_heads=4, ff_dim=128, num_layers=6, rate=0.1)
-    model.build((None, 32, 32, 3))
-    model.summary()
+                     embed_dim=64, num_heads=4, ff_dim=128, num_layers=6, rate=0.1).model()
+    model.summary(expand_nested=True)
     tf.keras.utils.plot_model(
-        model, to_file=ViTModel.__name__+'.png', show_shapes=True)
+        model, to_file=ViTModel.__name__+'.png', show_shapes=True,expand_nested=True)
 
     (train_images, train_labels), (test_images,
                                    test_labels) = tf.keras.datasets.cifar10.load_data()

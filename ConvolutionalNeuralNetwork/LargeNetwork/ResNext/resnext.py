@@ -20,109 +20,69 @@ callbacks = [
 ]
 
 
-def IdentityBlock(prev_Layer, filters):
-    f1, f2, f3 = filters
-    block = []
+def conv_block(inputs, filters, kernel_size, strides, cardinality):
+    group_channels = filters // cardinality
+    groups = tf.split(inputs, cardinality, axis=-1)
+    conv_outputs = []
+    for i in range(cardinality):
+        conv_outputs.append(tf.keras.layers.Conv2D(
+            filters=group_channels,
+            kernel_size=kernel_size,
+            strides=strides,
+            padding='same')(groups[i]))
+    concat = tf.keras.layers.Concatenate(axis=-1)(conv_outputs)
+    outputs = tf.keras.layers.BatchNormalization()(concat)
+    outputs = tf.keras.layers.Activation('relu')(outputs)
+    return outputs
 
-    for i in range(2):
-        x = tf.keras.layers.Conv2D(filters=f1, kernel_size=(
-            1, 1), strides=(1, 1), padding='valid')(prev_Layer)
-        x = tf.keras.layers.BatchNormalization(axis=3)(x)
-        x = tf.keras.layers.Activation(activation='relu')(x)
+def resnext_block(inputs, filters, kernel_size, strides, cardinality):
+    conv_outputs = conv_block(inputs, filters, kernel_size, strides, cardinality)
+    if inputs.shape[-1] != filters:
+        skip_connection = tf.keras.layers.Conv2D(
+            filters=filters,
+            kernel_size=(1, 1),
+            strides=strides,
+            padding='same')(inputs)
+        skip_connection = tf.keras.layers.BatchNormalization()(skip_connection)
+    else:
+        skip_connection = inputs
+    outputs = tf.keras.layers.Add()([conv_outputs, skip_connection])
+    outputs = tf.keras.layers.Activation('relu')(outputs)
+    return outputs
 
-        x = tf.keras.layers.Conv2D(filters=f2, kernel_size=(
-            3, 3), strides=(1, 1), padding='same')(x)
-        x = tf.keras.layers.BatchNormalization(axis=3)(x)
-        x = tf.keras.layers.Activation(activation='relu')(x)
-
-        x = tf.keras.layers.Conv2D(filters=f3, kernel_size=(
-            1, 1), strides=(1, 1), padding='valid')(x)
-        x = tf.keras.layers.BatchNormalization(axis=3)(x)
-        x = tf.keras.layers.Activation(activation='relu')(x)
-        block.append(x)
-
-    block.append(prev_Layer)
-    x = tf.keras.layers.Add()(block)
-    x = tf.keras.layers.Activation(activation='relu')(x)
-
-    return x
-
-
-def ConvBlock(prev_Layer, filters, strides):
-    f1, f2, f3 = filters
-
-    block = []
-
-    for i in range(2):
-        x = tf.keras.layers.Conv2D(filters=f1, kernel_size=(
-            1, 1), padding='valid', strides=strides)(prev_Layer)
-        x = tf.keras.layers.BatchNormalization(axis=3)(x)
-        x = tf.keras.layers.Activation(activation='relu')(x)
-
-        x = tf.keras.layers.Conv2D(filters=f2, kernel_size=(
-            3, 3), padding='same', strides=(1, 1))(x)
-        x = tf.keras.layers.BatchNormalization(axis=3)(x)
-        x = tf.keras.layers.Activation(activation='relu')(x)
-
-        x = tf.keras.layers.Conv2D(filters=f3, kernel_size=(
-            1, 1), padding='valid', strides=(1, 1))(x)
-        x = tf.keras.layers.BatchNormalization(axis=3)(x)
-        x = tf.keras.layers.Activation(activation='relu')(x)
-        block.append(x)
-
-    x2 = tf.keras.layers.Conv2D(filters=f3, kernel_size=(
-        1, 1), padding='valid', strides=strides)(prev_Layer)
-    x2 = tf.keras.layers.BatchNormalization(axis=3)(x2)
-
-    block.append(x2)
-    x = tf.keras.layers.Add()(block)
-    x = tf.keras.layers.Activation(activation='relu')(x)
-    return x
-
-
-def ResNext():
-    input_layer = tf.keras.layers.Input(shape=IMG_SIZE)
-    # Stage 1
-    x = tf.keras.layers.ZeroPadding2D((3, 3))(input_layer)
-    x = tf.keras.layers.Conv2D(
-        filters=64, kernel_size=(7, 7), strides=(2, 2))(x)
-    x = tf.keras.layers.BatchNormalization(axis=3)(x)
-    x = tf.keras.layers.Activation(activation='relu')(x)
-    x = tf.keras.layers.MaxPool2D(pool_size=(3, 3), strides=(2, 2))(x)
-
-    # Stage 2
-    x = ConvBlock(prev_Layer=x, filters=[64, 64, 128], strides=1)
-    x = IdentityBlock(prev_Layer=x, filters=[64, 64, 128])
-
-    # Stage 3
-    x = ConvBlock(prev_Layer=x, filters=[128, 128, 256], strides=2)
-    x = IdentityBlock(prev_Layer=x, filters=[128, 128, 256])
-
-    # Stage 6
-    x = tf.keras.layers.AveragePooling2D(pool_size=(7, 7))(x)
-
-    x = tf.keras.layers.Flatten()(x)
-    x = tf.keras.layers.Dense(units=10, activation='softmax')(x)
-
-    model = tf.keras.Model(inputs=input_layer, outputs=x, name='ResNet50')
+def ResNeXt(input_shape=(32, 32, 3), num_classes=10):
+    inputs = tf.keras.layers.Input(shape=input_shape)
+    x = tf.keras.layers.Conv2D(filters=64, kernel_size=(3, 3), strides=(1, 1), padding='same')(inputs)
+    x = tf.keras.layers.BatchNormalization()(x)
+    x = tf.keras.layers.Activation('relu')(x)
+    
+    # ResNeXt blocks
+    x = resnext_block(x, filters=128, kernel_size=(3, 3), strides=(2, 2), cardinality=32)
+    x = resnext_block(x, filters=256, kernel_size=(3, 3), strides=(2, 2), cardinality=32)
+    x = resnext_block(x, filters=512, kernel_size=(3, 3), strides=(2, 2), cardinality=32)
+    
+    # Global average pooling and dense layer
+    x = tf.keras.layers.GlobalAveragePooling2D()(x)
+    outputs = tf.keras.layers.Dense(units=num_classes, activation='softmax')(x)
+    
+    # Create the model
+    model = tf.keras.models.Model(inputs=inputs, outputs=outputs)
     return model
 
 
 def process_images(image, label):
     image = tf.image.per_image_standardization(image)
-    image = tf.image.resize(image, (64, 64))
     return image, label
 
 
 if __name__ == '__main__':
-    model = ResNext()
-    model.summary()
-    tf.keras.utils.plot_model(model, to_file=ResNext.__name__+'.png')
+    model = ResNeXt()
+    model.summary(expand_nested=True)
+    tf.keras.utils.plot_model(
+        model, to_file=ResNeXt.__name__+'.png', show_shapes=True, expand_nested=True)
 
     (train_images, train_labels), (test_images,
                                    test_labels) = tf.keras.datasets.cifar10.load_data()
-    CLASS_NAMES = ['airplane', 'automobile', 'bird', 'cat',
-                   'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
     validation_images, validation_labels = train_images[:5000], train_labels[:5000]
     train_images, train_labels = train_images[5000:], train_labels[5000:]
 
@@ -152,8 +112,8 @@ if __name__ == '__main__':
                      .shuffle(buffer_size=train_ds_size)
                      .batch(batch_size=64, drop_remainder=True))
     model.compile(loss='sparse_categorical_crossentropy',
-                  optimizer=tf.optimizers.Adam(lr=0.001), metrics=['accuracy'])
-    model.summary()
+                  optimizer=tf.keras.optimizers.Adam(), metrics=['accuracy'])
+
     model.fit(train_ds,
               epochs=50,
               validation_data=validation_ds,
