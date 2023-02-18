@@ -56,7 +56,7 @@ def process_images(image, label):
 if __name__ == '__main__':
     model = Mobilenet()
     model.summary()
-    tf.keras.utils.plot_model(model,to_file = Mobilenet.__name__+'.png')
+    tf.keras.utils.plot_model(model,to_file = Mobilenet.__name__+'.png',show_shapes = True)
 
     (train_images, train_labels), (test_images,
                                    test_labels) = tf.keras.datasets.cifar10.load_data()
