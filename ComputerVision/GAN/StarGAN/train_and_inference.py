@@ -139,7 +139,7 @@ def train_model(train, epochs=ITERATION, batch_size=BATCH_SIZE):
         pass
 
     print('Training...')
-    for epoch in range(3, epochs+1):
+    for epoch in range(56, epochs+1):
         start = time.time()
         gc.collect()
         total_real_cls_loss = 0
