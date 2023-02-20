@@ -35,36 +35,68 @@ def lenet5_model(input_shape=(28, 28, 1)):
     return model
 
 
-def mixup(x, y, alpha=0.2):
-    lam = tfp.distributions.Beta(alpha, alpha).sample((x.shape[0],))
-    lam_vec = tf.reshape(lam, [x.shape[0], 1, 1, 1])
+def sample_beta_distribution(size, concentration_0=0.2, concentration_1=0.2):
+    gamma_1_sample = tf.random.gamma(shape=[size], alpha=concentration_1)
+    gamma_2_sample = tf.random.gamma(shape=[size], alpha=concentration_0)
+    return gamma_1_sample / (gamma_1_sample + gamma_2_sample)
 
-    index = tf.random.shuffle(tf.range(x.shape[0]))
-    x = lam_vec * tf.cast(x, tf.float32) + (1 - lam_vec) * \
-        tf.gather(tf.cast(x, tf.float32), index)
-    return x, y
+
+def mix_up(ds_one, ds_two, alpha=0.2):
+    images_one, labels_one = ds_one
+    images_two, labels_two = ds_two
+    batch_size = tf.shape(images_one)[0]
+
+    l = sample_beta_distribution(batch_size, alpha, alpha)
+    x_l = tf.reshape(l, (batch_size, 1, 1, 1))
+    y_l = tf.reshape(l, (batch_size, 1))
+
+    images = images_one * x_l + images_two * (1 - x_l)
+    labels = labels_one * y_l + labels_two * (1 - y_l)
+    return (images, labels)
 
 
 if __name__ == '__main__':
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
-    x_train = np.expand_dims(x_train/255, axis=-1)
-    x_test = np.expand_dims(x_test/255, axis=-1)
+    
+    x_train = x_train.astype("float32") / 255.0
+    x_train = np.reshape(x_train, (-1, 28, 28, 1))
+    y_train = tf.one_hot(y_train, 10)
 
-    train_ds = tf.data.Dataset.from_tensor_slices((x_train, y_train))
-    test_ds = tf.data.Dataset.from_tensor_slices((x_test, y_test))
-    train_ds_size = tf.data.experimental.cardinality(train_ds).numpy()
-    test_ds_size = tf.data.experimental.cardinality(test_ds).numpy()
+    x_test = x_test.astype("float32") / 255.0
+    x_test = np.reshape(x_test, (-1, 28, 28, 1))
+    y_test = tf.one_hot(y_test, 10)
 
-    train_ds = (train_ds
-                .shuffle(buffer_size=train_ds_size)
-                .batch(batch_size=64, drop_remainder=True)
-                .map(mixup))
-    test_ds = (test_ds
-               .shuffle(buffer_size=train_ds_size)
-               .batch(batch_size=64, drop_remainder=True))
+    BATCH_SIZE = 64
+    EPOCHS = 10
+
+    val_samples = 2000
+    x_val, y_val = x_train[:val_samples], y_train[:val_samples]
+    new_x_train, new_y_train = x_train[val_samples:], y_train[val_samples:]
+
+    train_ds_one = (
+        tf.data.Dataset.from_tensor_slices((new_x_train, new_y_train))
+        .shuffle(BATCH_SIZE * 100)
+        .batch(BATCH_SIZE)
+    )
+    train_ds_two = (
+        tf.data.Dataset.from_tensor_slices((new_x_train, new_y_train))
+        .shuffle(BATCH_SIZE * 100)
+        .batch(BATCH_SIZE)
+    )
+    train_ds = tf.data.Dataset.zip((train_ds_one, train_ds_two))
+
+    val_ds = tf.data.Dataset.from_tensor_slices(
+        (x_val, y_val)).batch(BATCH_SIZE)
+
+    test_ds = tf.data.Dataset.from_tensor_slices(
+        (x_test, y_test)).batch(BATCH_SIZE)
+    
+    train_ds_mu = train_ds.map(
+        lambda ds_one, ds_two: mix_up(ds_one, ds_two, alpha=0.2), num_parallel_calls=tf.data.AUTOTUNE
+    )
 
     model = lenet5_model()
-    model.compile(loss='sparse_categorical_crossentropy',
-                  optimizer='adam', metrics=['accuracy'])
-    model.fit(train_ds, epochs=100,
-              validation_data=test_ds, callbacks=callbacks)
+    model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+    model.fit(train_ds_mu, validation_data=val_ds, epochs=EPOCHS)
+    _, test_acc = model.evaluate(test_ds)
+    print("Test accuracy: {:.2f}%".format(test_acc * 100))
