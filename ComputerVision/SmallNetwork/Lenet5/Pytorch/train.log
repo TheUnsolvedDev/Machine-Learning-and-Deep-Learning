@@ -1,0 +1,83 @@
+==========================================================================================
+Layer (type:depth-idx)                   Output Shape              Param #
+==========================================================================================
+Lenet5                                   [64, 10]                  --
+├─Sequential: 1-1                        [64, 120, 1, 1]           --
+│    └─Conv2d: 2-1                       [64, 6, 28, 28]           156
+│    └─Tanh: 2-2                         [64, 6, 28, 28]           --
+│    └─AvgPool2d: 2-3                    [64, 6, 14, 14]           --
+│    └─Conv2d: 2-4                       [64, 16, 10, 10]          2,416
+│    └─Tanh: 2-5                         [64, 16, 10, 10]          --
+│    └─AvgPool2d: 2-6                    [64, 16, 5, 5]            --
+│    └─Conv2d: 2-7                       [64, 120, 1, 1]           48,120
+│    └─Tanh: 2-8                         [64, 120, 1, 1]           --
+├─Sequential: 1-2                        [64, 10]                  --
+│    └─Linear: 2-9                       [64, 84]                  10,164
+│    └─Tanh: 2-10                        [64, 84]                  --
+│    └─Linear: 2-11                      [64, 10]                  850
+==========================================================================================
+Total params: 61,706
+Trainable params: 61,706
+Non-trainable params: 0
+Total mult-adds (M): 27.07
+==========================================================================================
+Input size (MB): 0.20
+Forward/backward pass size (MB): 3.34
+Params size (MB): 0.25
+Estimated Total Size (MB): 3.78
+==========================================================================================
+
+Epoch: 05
+Loss: 1.46125650,Test Loss: 1.46429253
+Accuracy: 100.00000000%,Test Accuracy: 100.00000000%
+Loss: 1.51134201, Accuracy: 95.08359872611464
+
+Epoch: 10
+Loss: 1.51838589,Test Loss: 1.48493648
+Accuracy: 93.75000000%,Test Accuracy: 100.00000000%
+Loss: 1.50960043, Accuracy: 95.21496815286625
+saving model...
+
+Epoch: 15
+Loss: 1.46821618,Test Loss: 1.64880538
+Accuracy: 100.00000000%,Test Accuracy: 81.25000000%
+Loss: 1.51022229, Accuracy: 95.12407112526539
+
+Epoch: 20
+Loss: 1.52365065,Test Loss: 1.46115053
+Accuracy: 93.75000000%,Test Accuracy: 100.00000000%
+Loss: 1.51048039, Accuracy: 95.0890724522293
+saving model...
+
+Epoch: 25
+Loss: 1.55276275,Test Loss: 1.59070122
+Accuracy: 90.62500000%,Test Accuracy: 87.50000000%
+Loss: 1.51206866, Accuracy: 94.91679936305732
+
+Epoch: 30
+Loss: 1.58355999,Test Loss: 1.46337318
+Accuracy: 87.50000000%,Test Accuracy: 100.00000000%
+Loss: 1.51311734, Accuracy: 94.80493630573248
+saving model...
+
+Epoch: 35
+Loss: 1.49270201,Test Loss: 1.46279192
+Accuracy: 96.87500000%,Test Accuracy: 100.00000000%
+Loss: 1.51444476, Accuracy: 94.67129208371247
+
+Epoch: 40
+Loss: 1.56370640,Test Loss: 1.50796807
+Accuracy: 90.62500000%,Test Accuracy: 93.75000000%
+Loss: 1.51584526, Accuracy: 94.52702030254777
+saving model...
+
+Epoch: 45
+Loss: 1.50860727,Test Loss: 1.53888643
+Accuracy: 93.75000000%,Test Accuracy: 93.75000000%
+Loss: 1.51669208, Accuracy: 94.44201167728238
+
+Epoch: 50
+Loss: 1.49345028,Test Loss: 1.46115053
+Accuracy: 96.87500000%,Test Accuracy: 100.00000000%
+Loss: 1.51733881, Accuracy: 94.37539808917198
+saving model...
