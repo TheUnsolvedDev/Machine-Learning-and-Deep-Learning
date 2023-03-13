@@ -14,17 +14,12 @@ Machine Learning Algorithms
 │   ├── MP-IDB: The Malaria Parasite Image Database for Image Processing and Analysis
 │   ├── MultimodelPrep
 │   └── pipeline_design
-│       └── Dataset
-│           ├── test
-│           └── train
-│               ├── category 1
-│               ├── category 2
-│               ├── category 3
-│               └── category 4
 ├── ArtificialNeuralNetwork
 │   ├── DeepNeuralNetwork
 │   └── SiameseNetwork
-├── ConvolutionalNeuralNetwork
+├── ComputerVision
+│   ├── AutoML
+│   │   └── NASNet
 │   ├── GAN
 │   │   ├── ConditionalGan
 │   │   ├── CycleGAN
@@ -32,27 +27,46 @@ Machine Learning Algorithms
 │   │   ├── DeepRegretAnalyticGAN
 │   │   ├── InitialGAN
 │   │   ├── LeastSquareGan
+│   │   ├── StarGAN
+│   │   ├── SuperResolutionGAN
 │   │   ├── WassersteinGAN
 │   │   └── WassersteinImprovedGAN
-│   ├── LargeNetwork
-│   │   ├── AlexNet
-│   │   ├── CapsuleNetwork
-│   │   ├── DenseNet
-│   │   ├── HighwayNet
-│   │   ├── InceptionNet
-│   │   │   ├── InceptionV1
-│   │   │   ├── InceptionV2
-│   │   │   ├── InceptionV3
-│   │   │   └── InceptionV4
-│   │   ├── NetworkInNetwork
-│   │   ├── ResidualAttentionNet
-│   │   ├── ResNet
-│   │   │   ├── BaseResnet
-│   │   │   └── Resnet18_CBAM
-│   │   ├── ResNext
-│   │   ├── SENet
-│   │   ├── VGGNet
-│   │   └── XceptionNet
+│   ├── ImageClassification
+│   │   ├── LargeNetwork
+│   │   │   ├── AlexNet
+│   │   │   ├── CapsuleNetwork
+│   │   │   ├── DenseNet
+│   │   │   ├── HighwayNet
+│   │   │   ├── InceptionNet
+│   │   │   │   ├── InceptionV1
+│   │   │   │   ├── InceptionV2
+│   │   │   │   ├── InceptionV3
+│   │   │   │   └── InceptionV4
+│   │   │   ├── NetworkInNetwork
+│   │   │   ├── ResidualAttentionNet
+│   │   │   ├── ResNet
+│   │   │   │   ├── base_resnet
+│   │   │   │   └── resnet18_CBAM
+│   │   │   ├── ResNext
+│   │   │   ├── SENet
+│   │   │   ├── VGGNet
+│   │   │   └── VisionTransformer
+│   │   ├── Robustness
+│   │   │   ├── FastGradientSignMethod
+│   │   │   └── IterativeLeastLikelyMethod
+│   │   └── SmallNetwork
+│   │       ├── DeepCompression
+│   │       ├── FractalNet
+│   │       ├── KnowledgeDistillation
+│   │       ├── Lenet5
+│   │       ├── MLP-Mixer
+│   │       ├── MobileNet
+│   │       ├── PolyNet
+│   │       ├── ShuffleNet
+│   │       ├── SqueezeNet
+│   │       ├── XceptionNet
+│   │       ├── XNOR-Net
+│   │       └── ZFNet
 │   ├── Misc
 │   │   ├── GeneticCNN
 │   │   ├── MetaQNN
@@ -62,39 +76,35 @@ Machine Learning Algorithms
 │   │   ├── SingleShotDetection
 │   │   └── YOLO
 │   │       └── v2
-│   ├── SemanticSegmentation
-│   │   ├── DeepLabV3Plus
-│   │   ├── Gated_SCNN
-│   │   ├── JointPyramidalUnit
-│   │   ├── PyramidalNet
-│   │   ├── ResUNet
-│   │   └── UNet
-│   └── SmallNetwork
-│       ├── FractalNet
-│       ├── Lenet5
-│       ├── MLP-Mixer
-│       ├── MobileNet
-│       ├── PolyNet
-│       ├── SqueezeNet
-│       └── ZFNet
+│   └── SemanticSegmentation
+│       ├── DeepLabV3Plus
+│       ├── Gated_SCNN
+│       ├── JointPyramidalUnit
+│       ├── PyramidalNet
+│       ├── ResUNet
+│       └── UNet
 ├── GraphNeuralNetwork
-├── LinearRegression
-├── LogisticRegression
-├── markdown_edits
+├── Machine_Learning_Algorithms
+│   ├── LinearRegression
+│   ├── LogisticRegression
+│   ├── NaiveBayesClassifier
+│   └── SVM
 ├── Miscellaneous
 │   ├── EmpiricalRiskMinimization
 │   ├── GaussianCDF
 │   ├── GradientAccumulation
 │   ├── Initialization_and_gradient_test
 │   └── Regularization_with_NM_optimization
-├── NaiveBayesClassifier
-├── RecurrentNeuralNetwork
-│   ├── Bidirectional_RNN
-│   ├── FourierNet
-│   └── GatedRecurrentUnit
-└── SVM
-
-
+├── NLP
+│   ├── TextClassification
+│   │   └── SentenceClassificationCNN
+│   └── WordRepresentations
+└── RecurrentNeuralNetwork
+    ├── Bidirectional_RNN
+    ├── Doc2Vec
+    ├── FourierNet
+    ├── GatedRecurrentUnit
+    └── SimpleRNN
 
 ```
 
@@ -106,7 +116,7 @@ Before trying, follow these steps:
  
   ###  Installation process :
   ```bash
-  pip3 install tensorflow-gpu #if you've an nvidia-gpu with cuda support
+  pip3 install tensorflow #if you've an nvidia-gpu with cuda support
   pip3 install pandas
   pip3 install numpy
   pip3 install matplotlib

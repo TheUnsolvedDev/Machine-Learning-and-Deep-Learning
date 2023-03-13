@@ -20,7 +20,8 @@ def eucl_dist_output_shape(shapes):
 
 
 def contrastive_loss(y_true, y_pred):
-    return tf.keras.backend.mean(y_true * tf.keras.backend.square(y_pred) + (1 - y_true) * tf.keras.backend.square(1 - y_pred))
+    return tf.reduce_mean(y_true * tf.square(y_pred) + (1 - y_true) * tf.square(1 - y_pred))
+
 
 def create_pairs(x, digit_indices):
     pairs = []
@@ -92,7 +93,7 @@ if __name__ == '__main__':
     y_test = y_test.astype('float32')
     X_train /= 255
     X_test /= 255
-    #input_dim = 784
+    # input_dim = 784
     input_dim = (1, img_rows, img_cols)
     nb_epoch = 12
 

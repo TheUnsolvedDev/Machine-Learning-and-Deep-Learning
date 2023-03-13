@@ -139,7 +139,7 @@ def train_model(train, epochs=ITERATION, batch_size=BATCH_SIZE):
         pass
 
     print('Training...')
-    for epoch in range(56, epochs+1):
+    for epoch in range(12, epochs+1):
         start = time.time()
         gc.collect()
         total_real_cls_loss = 0
@@ -184,7 +184,7 @@ def train_model(train, epochs=ITERATION, batch_size=BATCH_SIZE):
 if __name__ == '__main__':
     data = create_dataset()
     bce = tf.keras.losses.BinaryCrossentropy(from_logits=True)
-    l1 = tf.keras.losses.MeanAbsoluteError()
+    l1 = tf.keras.losses.MeanSquaredError()
     gen_optimizer = tf.keras.optimizers.Adam(0.0001, 0.5)
     disc_optimizer = tf.keras.optimizers.Adam(0.0001, 0.5)
     train_model(data)
